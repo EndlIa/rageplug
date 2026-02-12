@@ -28,6 +28,20 @@ const Timer = {
     window.addEventListener('beforeunload', () => this.cleanup());
     window.addEventListener('pagehide', () => this.cleanup());
     
+    // 监听后台的午夜重启消息
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.action === 'midnightRestart') {
+        console.log('收到午夜自动重启通知，更新界面');
+        // 重新同步状态
+        this.syncState();
+        // 更新统计和热力图
+        Stats.load();
+        Heatmap.generate();
+        // 显示开始标题
+        Title.showStart();
+      }
+    });
+    
     // 同步状态
     this.syncState();
   },

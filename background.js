@@ -28,16 +28,94 @@ let timerState = {
   elapsedSeconds: 0
 };
 
+// 记录开始计时时的日期，用于检测跨日
+let startDate = null;
+
 // 初始化：从存储恢复计时器状态
-chrome.storage.local.get(['timerState'], (result) => {
+chrome.storage.local.get(['timerState', 'startDate'], (result) => {
   if (result.timerState) {
     timerState = result.timerState;
+  }
+  if (result.startDate) {
+    startDate = result.startDate;
+  }
+  // 如果恢复时发现计时器在运行，启动日期检查
+  if (timerState.isRunning) {
+    startMidnightCheck();
   }
 });
 
 // 保存计时器状态
 function saveTimerState() {
-  chrome.storage.local.set({ timerState: timerState });
+  chrome.storage.local.set({ 
+    timerState: timerState,
+    startDate: startDate
+  });
+}
+
+// ========== 午夜自动重启逻辑 ==========
+let midnightCheckInterval = null;
+
+// 开始午夜检查
+function startMidnightCheck() {
+  // 如果已经在检查，先清除
+  if (midnightCheckInterval) {
+    clearInterval(midnightCheckInterval);
+  }
+  
+  // 每30秒检查一次是否跨日
+  midnightCheckInterval = setInterval(() => {
+    checkMidnightCrossover();
+  }, 30000); // 30秒检查一次
+}
+
+// 停止午夜检查
+function stopMidnightCheck() {
+  if (midnightCheckInterval) {
+    clearInterval(midnightCheckInterval);
+    midnightCheckInterval = null;
+  }
+}
+
+// 检查是否跨越午夜0点
+async function checkMidnightCrossover() {
+  if (!timerState.isRunning || !startDate) {
+    return;
+  }
+  
+  const currentDate = new Date().toISOString().split('T')[0];
+  
+  // 如果日期已经变化，说明跨越了午夜0点
+  if (currentDate !== startDate) {
+    console.log('检测到跨日，自动结束并重新开始计时');
+    
+    // 1. 先停止当前计时并保存记录
+    if (timerState.isRunning) {
+      const totalSeconds = Math.floor((Date.now() - timerState.startTime) / 1000);
+      timerState.isRunning = false;
+      timerState.startTime = null;
+      timerState.elapsedSeconds = 0;
+      
+      // 保存学习记录（如果超过60秒）
+      if (totalSeconds >= 60) {
+        await saveStudySession(totalSeconds);
+      }
+    }
+    
+    // 2. 立即重新开始计时
+    timerState.isRunning = true;
+    timerState.startTime = Date.now();
+    startDate = currentDate; // 更新为新的日期
+    saveTimerState();
+    
+    // 3. 通知所有打开的页面更新状态
+    chrome.runtime.sendMessage({ 
+      action: 'midnightRestart',
+      newDate: currentDate 
+    }).catch(() => {
+      // 如果没有页面在监听，忽略错误
+    });
+  }
 }
 
 // 监听来自页面的消息
@@ -57,7 +135,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (!timerState.isRunning) {
         timerState.isRunning = true;
         timerState.startTime = Date.now();
+        startDate = new Date().toISOString().split('T')[0]; // 记录开始日期
         saveTimerState();
+        startMidnightCheck(); // 启动午夜检查
         sendResponse({ success: true });
       }
       break;
@@ -69,6 +149,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         timerState.isRunning = false;
         timerState.startTime = null;
         timerState.elapsedSeconds = 0;
+        startDate = null; // 清除开始日期
+        stopMidnightCheck(); // 停止午夜检查
         saveTimerState();
         
         // 保存学习记录并返回最新统计
@@ -143,12 +225,8 @@ async function saveStudySession(duration) {
     }
   }
   
-  // 判断记录归属日期：凌晨2点之前（0:00-1:59）归到前一天
-  let recordDate = new Date(actualEndTime);
-  if (actualEndTime.getHours() < 2) {
-    recordDate.setDate(recordDate.getDate() - 1);
-  }
-  const dateKey = recordDate.toISOString().split('T')[0];
+  // 使用实际结束时间所在的日期作为记录日期
+  const dateKey = actualEndTime.toISOString().split('T')[0];
   
   const result = await chrome.storage.local.get(['studyRecords']);
   const records = result.studyRecords || {};
@@ -174,9 +252,6 @@ async function saveStudySession(duration) {
 // 获取学习统计数据
 async function getStudyStats() {
   const now = new Date();
-  if (now.getHours() < 2) {
-    now.setDate(now.getDate() - 1);
-  }
   const today = now.toISOString().split('T')[0];
   const weekStart = getWeekStartDate();
   
@@ -198,12 +273,8 @@ async function getStudyStats() {
 }
 
 // 获取本周的开始日期
-// 凌晨2点之前算作前一天
 function getWeekStartDate() {
   const today = new Date();
-  if (today.getHours() < 2) {
-    today.setDate(today.getDate() - 1);
-  }
   const day = today.getDay();
   const diff = today.getDate() - day + (day === 0 ? -6 : 1);
   const monday = new Date(today);  // 创建新对象，避免修改原对象
@@ -214,9 +285,6 @@ function getWeekStartDate() {
 // 清零当天的记录
 async function resetTodayRecords() {
   const now = new Date();
-  if (now.getHours() < 2) {
-    now.setDate(now.getDate() - 1);
-  }
   const today = now.toISOString().split('T')[0];
   const result = await chrome.storage.local.get(['studyRecords']);
   const records = result.studyRecords || {};
