@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "RagePlug",
+  "version": "1.0",
+  "description": "Keep my brain clean",
+  "permissions": [
+    "tabs",
+    "webNavigation",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.x.com/*",
+    "*://*.twitter.com/*",
+    "*://*.xiaohongshu.com/*",
+    "*://*.alicesw.com/*",
+    "*://manwa.me/*",
+    "*://hanimeone.me/*",
+    "*://*.rule34video.com/*",
+    "*://*.jinrishici.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "omnibox": {
+    "keyword": "rp"
+  }
+}

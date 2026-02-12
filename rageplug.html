@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>鬼神明明，自思自量</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      min-height: 100vh;
+      background: #000;
+      color: #e8e8e8;
+      font-family: "Crimson Text", "Noto Serif SC", Georgia, serif;
+      padding: 40px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      font-size: 48px;
+      font-family: "Noto Serif SC", "Playfair Display", serif;
+      font-weight: 700;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+      color: #f5f5f5;
+    }
+    
+    .poem-section {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px;
+      opacity: 0.8;
+    }
+    
+    .poem-content {
+      font-size: 22px;
+      line-height: 1.8;
+      color: #c0c0c0;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      font-family: "Noto Serif SC", "Crimson Text", serif;
+    }
+    
+    .poem-info {
+      font-size: 16px;
+      color: #888;
+      letter-spacing: 1px;
+      font-family: "Noto Serif SC", "Crimson Text", serif;
+    }
+    
+    .poem-loading {
+      color: #d0d0d0;
+      font-size: 18px;
+      font-family: "Crimson Text", serif;
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+    
+    .timer-section {
+      background: #111;
+      border-radius: 8px;
+      padding: 40px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .timer-display {
+      font-size: 72px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: #a29090;
+      will-change: color;
+      font-family: "Playfair Display", "Crimson Text", Georgia, serif;
+      letter-spacing: 4px;
+    }
+    
+    .timer-display.running {
+      color: #b3c4d1;
+    }
+    
+    .btn {
+      padding: 15px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: "Crimson Text", "Noto Serif SC", Georgia, serif;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: transform 0.2s, opacity 0.3s;
+      margin: 0 10px;
+      will-change: transform;
+    }
+    
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+    
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .btn-start {
+      background: #e8e8e8;
+      color: #1a1a1a;
+    }
+    
+    .btn-stop {
+      background: #e8e8e8;
+      color: #1a1a1a;
+    }
+    
+    .btn-reset {
+      background: #d2bfbf;
+      color: #fff;
+    }
+    
+    .btn-reset:hover:not(:disabled) {
+      background: #cbb6b6;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .stats-section {
+      background: #111;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+    }
+    
+    .stat-item:last-child {
+      border-bottom: none;
+    }
+    
+    .stat-label {
+      color: #d0d0d0;
+      font-size: 18px;
+      font-family: "Playfair Display", "Crimson Text", serif;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+    
+    .stat-value {
+      color: #a29090;
+      font-size: 20px;
+      font-weight: 600;
+      font-family: "Playfair Display", "Crimson Text", serif;
+      letter-spacing: 1px;
+    }
+    
+    .history-section {
+      background: #111;
+      border-radius: 8px;
+      padding: 30px;
+    }
+    
+    .history-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #d0d0d0;
+      font-family: "Playfair Display", "Crimson Text", serif;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    
+    .history-list {
+      max-height: 400px;
+      overflow-y: auto;
+      will-change: scroll-position;
+    }
+    
+    /* 优化滚动条样式（Webkit） */
+    .history-list::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .history-list::-webkit-scrollbar-track {
+      background: #111;
+    }
+    
+    .history-list::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+    
+    .history-list::-webkit-scrollbar-thumb:hover {
+      background: #444;
+    }
+    
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+    }
+    
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    
+    .history-date {
+      color: #999;
+      font-family: "Crimson Text", "Noto Serif SC", serif;
+    }
+    
+    .history-duration {
+      color: #a29090;
+      font-weight: 600;
+      font-family: "Crimson Text", serif;
+      letter-spacing: 0.5px;
+    }
+    
+    .empty-message {
+      text-align: center;
+      color: #d0d0d0;
+      padding: 20px;
+      font-family: "Crimson Text", "Noto Serif SC", serif;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">鬼神明明，自思自量。</div>
+    
+    <div class="poem-section" id="poemSection">
+      <div class="poem-loading">Poem loading...</div>
+    </div>
+    
+    <div class="timer-section">
+      <div class="timer-display" id="timer">00:00:00</div>
+      <div>
+        <button class="btn btn-start" id="startBtn">Begin</button>
+        <button class="btn btn-stop" id="stopBtn" disabled>End</button>
+        <button class="btn btn-reset" id="resetBtn">Reset</button>
+      </div>
+    </div>
+    
+    <div class="stats-section">
+      <div class="stat-item">
+        <span class="stat-label">Today <span id="todayDate" style="font-size: 14px; color: #888; font-weight: 400;"></span></span>
+        <span class="stat-value" id="todayTotal">00:00:00</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">This Week</span>
+        <span class="stat-value" id="weekTotal">00:00:00</span>
+      </div>
+    </div>
+    
+    <div class="history-section">
+      <div class="history-title">Records</div>
+      <div class="history-list" id="historyList">
+        <div class="empty-message">No records yet</div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="poem.js"></script>
+  <script src="timer.js"></script>
+</body>
+</html>
