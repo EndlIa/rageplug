@@ -237,6 +237,259 @@
       font-family: "Crimson Text", "Noto Serif SC", serif;
       font-style: italic;
     }
+    
+    /* 热力图样式 */
+    .heatmap-section {
+      background: #111;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .heatmap-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #d0d0d0;
+      font-family: "Playfair Display", "Crimson Text", serif;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    
+    .heatmap-container {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 10px 0;
+      padding-top: 25px;
+      position: relative;
+    }
+    
+    .heatmap-months {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 20px;
+      display: flex;
+      font-size: 11px;
+      color: #888;
+      font-family: "Crimson Text", "Noto Serif SC", serif;
+    }
+    
+    .heatmap-month-label {
+      padding-left: 2px;
+    }
+    
+    .heatmap-container::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .heatmap-container::-webkit-scrollbar-track {
+      background: #111;
+    }
+    
+    .heatmap-container::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+    
+    .heatmap-grid {
+      display: inline-grid;
+      grid-template-rows: repeat(7, 12px);
+      grid-gap: 3px;
+      min-width: 100%;
+    }
+    
+    .heatmap-cell {
+      width: 12px;
+      height: 12px;
+      background: #1a1a1a;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    
+    .heatmap-cell:hover {
+      border: 1px solid #666;
+      transform: scale(1.3);
+      z-index: 10;
+    }
+    
+    .heatmap-cell[data-level="0"] { background: #1a1a1a; }
+    .heatmap-cell[data-level="1"] { background: #c8e6c8; }
+    .heatmap-cell[data-level="2"] { background: #8fd68f; }
+    .heatmap-cell[data-level="3"] { background: #57c657; }
+    .heatmap-cell[data-level="4"] { background: #2eb82e; }
+    .heatmap-cell[data-level="5"] { background: #29a3a3; }
+    .heatmap-cell[data-level="6"] { background: #66b3d9; }
+    .heatmap-cell[data-level="7"] { background: #3399cc; }
+    .heatmap-cell[data-level="8"] { background: #1f6699; }
+    .heatmap-cell[data-level="9"] { background: #f5f5b3; }
+    .heatmap-cell[data-level="10"] { background: #f0eb85; }
+    .heatmap-cell[data-level="11"] { background: #ebdb57; }
+    .heatmap-cell[data-level="12"] { background: #e6cc29; }
+    .heatmap-cell[data-level="13"] { background: #ffb3b3; }
+    .heatmap-cell[data-level="14"] { background: #ff8080; }
+    .heatmap-cell[data-level="15"] { background: #ff4d4d; }
+    .heatmap-cell[data-level="16"] { background: #e60000; }
+    
+    /* Tooltip 提示框 */
+    .heatmap-tooltip {
+      position: fixed;
+      background: rgba(0, 0, 0, 0.95);
+      color: #e8e8e8;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      pointer-events: none;
+      z-index: 1000;
+      white-space: nowrap;
+      border: 1px solid #333;
+      font-family: "Crimson Text", "Noto Serif SC", serif;
+      display: none;
+    }
+    
+    /* 编辑弹窗样式 */
+    .edit-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    
+    .edit-modal.show {
+      display: flex;
+    }
+    
+    .edit-modal-content {
+      background: #111;
+      border-radius: 8px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid #333;
+    }
+    
+    .edit-modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .edit-modal-content::-webkit-scrollbar-track {
+      background: #111;
+    }
+    
+    .edit-modal-content::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+    
+    .edit-modal-content::-webkit-scrollbar-thumb:hover {
+      background: #444;
+    }
+    
+    .edit-modal-title {
+      font-size: 24px;
+      margin-bottom: 25px;
+      color: #d0d0d0;
+      font-family: "Playfair Display", "Noto Serif SC", serif;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    
+    .edit-section {
+      margin-bottom: 25px;
+    }
+    
+    .edit-section-title {
+      font-size: 16px;
+      color: #a29090;
+      margin-bottom: 10px;
+      font-family: "Noto Serif SC", "Crimson Text", serif;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    
+    .edit-textarea {
+      width: 100%;
+      min-height: 100px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #e8e8e8;
+      font-family: "Noto Serif SC", "Crimson Text", serif;
+      font-size: 14px;
+      padding: 12px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    
+    .edit-textarea:focus {
+      outline: none;
+      border-color: #a29090;
+    }
+    
+    .edit-hint {
+      font-size: 12px;
+      color: #888;
+      margin-top: 5px;
+      font-family: "Crimson Text", serif;
+      font-style: italic;
+    }
+    
+    .edit-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .edit-btn {
+      padding: 12px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: "Crimson Text", "Noto Serif SC", serif;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: transform 0.2s, opacity 0.3s;
+    }
+    
+    .edit-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .edit-btn:active {
+      transform: translateY(0);
+    }
+    
+    .edit-btn-save {
+      background: #e8e8e8;
+      color: #1a1a1a;
+    }
+    
+    .edit-btn-cancel {
+      background: #333;
+      color: #e8e8e8;
+    }
+    
+    .edit-btn-cancel:hover {
+      background: #444;
+    }
+    
+    .header {
+      cursor: pointer;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -267,15 +520,43 @@
       </div>
     </div>
     
-    <div class="history-section">
-      <div class="history-title">Records</div>
-      <div class="history-list" id="historyList">
-        <div class="empty-message">No records yet</div>
+    <div class="heatmap-section">
+      <div class="heatmap-title">Activity</div>
+      <div class="heatmap-container">
+        <div class="heatmap-months" id="heatmapMonths"></div>
+        <div class="heatmap-grid" id="heatmapGrid"></div>
       </div>
     </div>
   </div>
   
-  <script src="poem.js"></script>
+  <!-- 句子库编辑弹窗 -->
+  <div class="edit-modal" id="editModal">
+    <div class="edit-modal-content">
+      <div class="edit-section">
+        <textarea class="edit-textarea" id="startSentencesInput"></textarea>
+      </div>
+      
+      <div class="edit-section">
+        <textarea class="edit-textarea" id="endSentencesInput"></textarea>
+      </div>
+      
+      <div class="edit-buttons">
+        <button class="edit-btn edit-btn-save" id="saveSentencesBtn">保存</button>
+        <button class="edit-btn edit-btn-cancel" id="cancelEditBtn">取消</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tooltip -->
+  <div class="heatmap-tooltip" id="heatmapTooltip"></div>
+  
+  <script src="config.js"></script>
+  <script src="utils.js"></script>
+  <script src="title.js"></script>
   <script src="timer.js"></script>
+  <script src="stats.js"></script>
+  <script src="heatmap.js"></script>
+  <script src="poem.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

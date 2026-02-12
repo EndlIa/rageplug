@@ -110,33 +110,74 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // 保存学习记录
 async function saveStudySession(duration) {
-  const today = new Date().toISOString().split('T')[0];
+  const endTime = new Date();
+  const startTime = new Date(endTime - duration * 1000);
+  
+  // 计算凌晨4点的时间点（结束时间那天的凌晨4点）
+  const fourAM = new Date(endTime);
+  fourAM.setHours(4, 0, 0, 0);
+  
+  // 如果结束时间小于凌晨4点，说明凌晨4点应该是前一天的
+  if (endTime.getHours() < 4) {
+    fourAM.setDate(fourAM.getDate() - 1);
+  }
+  
+  // 凌晨2点的时间点（与凌晨4点同一天）
+  const twoAM = new Date(fourAM);
+  twoAM.setHours(2, 0, 0, 0);
+  
+  let actualEndTime = endTime;
+  let actualDuration = duration;
+  
+  // 检查是否跨越了凌晨4点：开始时间 < 凌晨4点 <= 结束时间
+  if (startTime < fourAM && endTime >= fourAM) {
+    // 跨越了凌晨4点，强制在凌晨1:59:59结束（算作前一天）
+    const cutoffTime = new Date(twoAM);
+    cutoffTime.setSeconds(-1); // 设置为01:59:59
+    actualEndTime = cutoffTime;
+    actualDuration = Math.floor((cutoffTime - startTime) / 1000);
+    
+    // 如果调整后的时长小于60秒或为负数，不记录
+    if (actualDuration < 60) {
+      return;
+    }
+  }
+  
+  // 判断记录归属日期：凌晨2点之前（0:00-1:59）归到前一天
+  let recordDate = new Date(actualEndTime);
+  if (actualEndTime.getHours() < 2) {
+    recordDate.setDate(recordDate.getDate() - 1);
+  }
+  const dateKey = recordDate.toISOString().split('T')[0];
   
   const result = await chrome.storage.local.get(['studyRecords']);
   const records = result.studyRecords || {};
   
-  if (!records[today]) {
-    records[today] = {
-      date: today,
+  if (!records[dateKey]) {
+    records[dateKey] = {
+      date: dateKey,
       sessions: [],
       totalSeconds: 0
     };
   }
   
-  const now = new Date();
-  records[today].sessions.push({
-    start: new Date(now - duration * 1000).toLocaleTimeString('zh-CN'),
-    end: now.toLocaleTimeString('zh-CN'),
-    duration
+  records[dateKey].sessions.push({
+    start: startTime.toLocaleTimeString('zh-CN'),
+    end: actualEndTime.toLocaleTimeString('zh-CN'),
+    duration: actualDuration
   });
-  records[today].totalSeconds += duration;
+  records[dateKey].totalSeconds += actualDuration;
   
   await chrome.storage.local.set({ studyRecords: records });
 }
 
 // 获取学习统计数据
 async function getStudyStats() {
-  const today = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  if (now.getHours() < 2) {
+    now.setDate(now.getDate() - 1);
+  }
+  const today = now.toISOString().split('T')[0];
   const weekStart = getWeekStartDate();
   
   const result = await chrome.storage.local.get(['studyRecords']);
@@ -157,17 +198,26 @@ async function getStudyStats() {
 }
 
 // 获取本周的开始日期
+// 凌晨2点之前算作前一天
 function getWeekStartDate() {
   const today = new Date();
+  if (today.getHours() < 2) {
+    today.setDate(today.getDate() - 1);
+  }
   const day = today.getDay();
   const diff = today.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(today.setDate(diff));
+  const monday = new Date(today);  // 创建新对象，避免修改原对象
+  monday.setDate(diff);
   return monday.toISOString().split('T')[0];
 }
 
 // 清零当天的记录
 async function resetTodayRecords() {
-  const today = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  if (now.getHours() < 2) {
+    now.setDate(now.getDate() - 1);
+  }
+  const today = now.toISOString().split('T')[0];
   const result = await chrome.storage.local.get(['studyRecords']);
   const records = result.studyRecords || {};
   
