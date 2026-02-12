@@ -59,7 +59,6 @@ const Stats = {
     if (response.success) {
       await this.load();
       await Heatmap.generate();
-      alert('今天的记录已清零');
     }
   }
 };

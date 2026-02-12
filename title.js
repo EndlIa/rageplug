@@ -8,6 +8,8 @@ const Title = {
   endSentencesInput: null,
   saveSentencesBtn: null,
   cancelEditBtn: null,
+  exportDataBtn: null,
+  importDataBtn: null,
   
   // 初始化
   init(headerEl) {
@@ -17,6 +19,8 @@ const Title = {
     this.endSentencesInput = document.getElementById('endSentencesInput');
     this.saveSentencesBtn = document.getElementById('saveSentencesBtn');
     this.cancelEditBtn = document.getElementById('cancelEditBtn');
+    this.exportDataBtn = document.getElementById('exportDataBtn');
+    this.importDataBtn = document.getElementById('importDataBtn');
     
     // 绑定双击事件
     this.headerElement.addEventListener('dblclick', () => this.openEditModal());
@@ -24,6 +28,8 @@ const Title = {
     // 绑定按钮事件
     this.saveSentencesBtn.addEventListener('click', () => this.saveSentences());
     this.cancelEditBtn.addEventListener('click', () => this.closeEditModal());
+    this.exportDataBtn.addEventListener('click', () => this.exportData());
+    this.importDataBtn.addEventListener('click', () => this.importData());
     
     // 点击弹窗外部关闭
     this.editModal.addEventListener('click', (e) => {
@@ -63,12 +69,10 @@ const Title = {
     
     // 验证至少有一个句子
     if (startSentences.length === 0) {
-      alert('请至少输入一个开始时显示的句子');
       return;
     }
     
     if (endSentences.length === 0) {
-      alert('请至少输入一个结束时显示的句子');
       return;
     }
     
@@ -77,9 +81,6 @@ const Title = {
     
     // 关闭弹窗
     this.closeEditModal();
-    
-    // 提示保存成功
-    alert('句子库已保存！');
   },
   
   // 显示开始时的句子
@@ -102,6 +103,23 @@ const Title = {
   restore() {
     if (this.headerElement) {
       this.headerElement.textContent = CONFIG.originalTitle;
+    }
+  },
+  
+  // 导出数据
+  async exportData() {
+    await DataManager.exportData();
+  },
+  
+  // 导入数据
+  async importData() {
+    const result = await DataManager.promptImport();
+    if (result.needReload) {
+      // 关闭弹窗并刷新页面
+      this.closeEditModal();
+      setTimeout(() => {
+        location.reload();
+      }, 500);
     }
   }
 };

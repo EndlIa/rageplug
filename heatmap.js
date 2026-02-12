@@ -1,16 +1,48 @@
 // ========== 热力图模块 ==========
 
 const Heatmap = {
+  // 常量
+  MONTH_NAMES: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  
   // DOM 元素
   gridElement: null,
   monthsElement: null,
   tooltipElement: null,
+  cellDataMap: new Map(), // 存储单元格数据
   
   // 初始化
   init(gridEl, monthsEl) {
     this.gridElement = gridEl;
     this.monthsElement = monthsEl;
+    this.setupEventDelegation();
     this.generate();
+  },
+  
+  // 设置事件委托
+  setupEventDelegation() {
+    this.gridElement.addEventListener('mouseenter', (e) => {
+      if (e.target.classList.contains('heatmap-cell')) {
+        const key = `${e.target.style.gridRow}-${e.target.style.gridColumn}`;
+        const data = this.cellDataMap.get(key);
+        if (data) {
+          this.showTooltip(e, data.date, data.seconds);
+        }
+      }
+    }, true);
+    
+    this.gridElement.addEventListener('mousemove', (e) => {
+      if (e.target.classList.contains('heatmap-cell')) {
+        const tooltip = this.getTooltip();
+        tooltip.style.left = `${e.clientX + 10}px`;
+        tooltip.style.top = `${e.clientY - 30}px`;
+      }
+    });
+    
+    this.gridElement.addEventListener('mouseleave', (e) => {
+      if (e.target.classList.contains('heatmap-cell')) {
+        this.hideTooltip();
+      }
+    }, true);
   },
   
   // 获取热力图等级
@@ -78,10 +110,10 @@ const Heatmap = {
     
     // 计算所有日期数据
     while (currentDate <= today) {
-      const dateStr = currentDate.toISOString().split('T')[0];
+      const month = currentDate.getMonth();
+      const dateStr = formatDateString(currentDate);
       const dayOfWeek = currentDate.getDay();
       const seconds = records[dateStr]?.totalSeconds || 0;
-      const month = currentDate.getMonth();
       
       const daysSinceStart = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
       const currentColumnIndex = Math.floor((daysSinceStart + firstDayOfWeek) / 7);
@@ -108,25 +140,28 @@ const Heatmap = {
     // 清空现有内容
     this.gridElement.innerHTML = '';
     this.monthsElement.innerHTML = '';
+    this.cellDataMap.clear();
     
     // 设置网格列数
     const totalColumns = days.length > 0 ? Math.max(...days.map(d => d.column)) : 0;
     this.gridElement.style.gridTemplateColumns = `repeat(${totalColumns}, 12px)`;
     
     // 渲染月份标签
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const cellWidth = 15;
+    const monthFragment = document.createDocumentFragment();
     
     monthPositions.forEach(pos => {
       const monthLabel = document.createElement('div');
       monthLabel.className = 'heatmap-month-label';
-      monthLabel.textContent = monthNames[pos.month];
+      monthLabel.textContent = this.MONTH_NAMES[pos.month];
       monthLabel.style.position = 'absolute';
       monthLabel.style.left = `${pos.columnIndex * cellWidth}px`;
-      this.monthsElement.appendChild(monthLabel);
+      monthFragment.appendChild(monthLabel);
     });
+    this.monthsElement.appendChild(monthFragment);
     
     // 渲染热力图格子
+    const cellFragment = document.createDocumentFragment();
     days.forEach(day => {
       const cell = document.createElement('div');
       cell.className = 'heatmap-cell';
@@ -134,15 +169,12 @@ const Heatmap = {
       cell.style.gridRow = day.row;
       cell.style.gridColumn = day.column;
       
-      cell.addEventListener('mouseenter', (e) => this.showTooltip(e, day.date, day.seconds));
-      cell.addEventListener('mousemove', (e) => {
-        const tooltip = this.getTooltip();
-        tooltip.style.left = `${e.clientX + 10}px`;
-        tooltip.style.top = `${e.clientY - 30}px`;
-      });
-      cell.addEventListener('mouseleave', () => this.hideTooltip());
+      // 存储单元格数据
+      const key = `${day.row}-${day.column}`;
+      this.cellDataMap.set(key, { date: day.date, seconds: day.seconds });
       
-      this.gridElement.appendChild(cell);
+      cellFragment.appendChild(cell);
     });
+    this.gridElement.appendChild(cellFragment);
   }
 };

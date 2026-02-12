@@ -80,9 +80,9 @@
       font-weight: 600;
       margin-bottom: 30px;
       color: #a29090;
-      will-change: color;
       font-family: "Playfair Display", "Crimson Text", Georgia, serif;
       letter-spacing: 4px;
+      transition: color 0.3s;
     }
     
     .timer-display.running {
@@ -100,7 +100,6 @@
       letter-spacing: 0.5px;
       transition: transform 0.2s, opacity 0.3s;
       margin: 0 10px;
-      will-change: transform;
     }
     
     .btn:hover:not(:disabled) {
@@ -187,7 +186,6 @@
     .history-list {
       max-height: 400px;
       overflow-y: auto;
-      will-change: scroll-position;
     }
     
     /* 优化滚动条样式（Webkit） */
@@ -490,6 +488,57 @@
       cursor: pointer;
       user-select: none;
     }
+    
+    /* 数据管理按钮样式 */
+    .data-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+    }
+    
+    .data-btn {
+      padding: 10px 25px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: "Crimson Text", "Noto Serif SC", serif;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+      background: #2a2a2a;
+      color: #d0d0d0;
+    }
+    
+    .data-btn:hover {
+      background: #3a3a3a;
+      transform: translateY(-1px);
+    }
+    
+    .data-btn:active {
+      transform: translateY(0);
+    }
+    
+    .data-btn-export {
+      background: #3a4a3a;
+      color: #b3d9b3;
+    }
+    
+    .data-btn-export:hover {
+      background: #4a5a4a;
+    }
+    
+    .data-btn-import {
+      background: #4a3a3a;
+      color: #d9b3b3;
+    }
+    
+    .data-btn-import:hover {
+      background: #5a4a4a;
+    }
   </style>
 </head>
 <body>
@@ -544,6 +593,11 @@
         <button class="edit-btn edit-btn-save" id="saveSentencesBtn">保存</button>
         <button class="edit-btn edit-btn-cancel" id="cancelEditBtn">取消</button>
       </div>
+      
+      <div class="data-buttons">
+        <button class="data-btn data-btn-export" id="exportDataBtn">导出数据</button>
+        <button class="data-btn data-btn-import" id="importDataBtn">导入数据</button>
+      </div>
     </div>
   </div>
   
@@ -552,6 +606,7 @@
   
   <script src="config.js"></script>
   <script src="utils.js"></script>
+  <script src="data-manager.js"></script>
   <script src="title.js"></script>
   <script src="timer.js"></script>
   <script src="stats.js"></script>

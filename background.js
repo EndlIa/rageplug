@@ -10,6 +10,14 @@ const BLOCKED_PATTERNS = [
   /^https?:\/\/(www\.)?rule34video\.com(\/|$)/
 ];
 
+// 导入 utils 中的函数（在 service worker 中需要重新定义）
+function formatDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
   if (details.frameId !== 0) return;
   
@@ -83,7 +91,7 @@ async function checkMidnightCrossover() {
     return;
   }
   
-  const currentDate = new Date().toISOString().split('T')[0];
+  const currentDate = formatDateString();
   
   // 如果日期已经变化，说明跨越了午夜0点
   if (currentDate !== startDate) {
@@ -135,7 +143,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (!timerState.isRunning) {
         timerState.isRunning = true;
         timerState.startTime = Date.now();
-        startDate = new Date().toISOString().split('T')[0]; // 记录开始日期
+        startDate = formatDateString(); // 记录开始日期
         saveTimerState();
         startMidnightCheck(); // 启动午夜检查
         sendResponse({ success: true });
@@ -226,7 +234,7 @@ async function saveStudySession(duration) {
   }
   
   // 使用实际结束时间所在的日期作为记录日期
-  const dateKey = actualEndTime.toISOString().split('T')[0];
+  const dateKey = formatDateString(actualEndTime);
   
   const result = await chrome.storage.local.get(['studyRecords']);
   const records = result.studyRecords || {};
@@ -251,8 +259,7 @@ async function saveStudySession(duration) {
 
 // 获取学习统计数据
 async function getStudyStats() {
-  const now = new Date();
-  const today = now.toISOString().split('T')[0];
+  const today = formatDateString();
   const weekStart = getWeekStartDate();
   
   const result = await chrome.storage.local.get(['studyRecords']);
@@ -272,20 +279,19 @@ async function getStudyStats() {
   return { todayTotal, weekTotal };
 }
 
-// 获取本周的开始日期
+// 获取本周的开始日期（周一）
 function getWeekStartDate() {
   const today = new Date();
   const day = today.getDay();
   const diff = today.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(today);  // 创建新对象，避免修改原对象
+  const monday = new Date(today);
   monday.setDate(diff);
-  return monday.toISOString().split('T')[0];
+  return formatDateString(monday);
 }
 
 // 清零当天的记录
 async function resetTodayRecords() {
-  const now = new Date();
-  const today = now.toISOString().split('T')[0];
+  const today = formatDateString();
   const result = await chrome.storage.local.get(['studyRecords']);
   const records = result.studyRecords || {};
   
