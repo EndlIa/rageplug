@@ -3,8 +3,18 @@
   "name": "rageplug",
   "version": "1.0.0",
   "description": "简中互联网，很神奇吧",
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "128": "assets/icon128.png"
+  },
   "permissions": ["storage"],
   "action": {
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "128": "assets/icon128.png"
+    },
     "default_title": "rageplug",
     "default_popup": "popup.html"
   },
