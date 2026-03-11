@@ -1,0 +1,183 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 300px;
+  font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+}
+
+.popup {
+  padding: 16px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1a1a1a;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e8e8e8;
+  margin: 12px 0;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.section-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: #aaa;
+  margin-left: 4px;
+}
+
+/* 白名单词条背景色区分 */
+.whitelist li {
+  background: #f0faf0;
+}
+
+.whitelist li .remove-btn:hover {
+  color: #276749;
+}
+
+/* --- 开关 toggle --- */
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-label {
+  font-size: 14px;
+}
+
+.toggle input {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: #ccc;
+  border-radius: 11px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-slider::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle input:checked + .toggle-slider {
+  background: #0066ff;
+}
+
+.toggle input:checked + .toggle-slider::after {
+  transform: translateX(18px);
+}
+
+/* --- 屏蔽词输入 --- */
+.blocklist-input {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.blocklist-input input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.blocklist-input input:focus {
+  border-color: #0066ff;
+}
+
+.blocklist-input button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #0066ff;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.blocklist-input button:hover {
+  background: #0052cc;
+}
+
+/* --- 屏蔽词列表 --- */
+.blocklist {
+  list-style: none;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.blocklist li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  margin-bottom: 4px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.blocklist li .word {
+  word-break: break-all;
+  flex: 1;
+  margin-right: 8px;
+}
+
+.blocklist li .remove-btn {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.blocklist li .remove-btn:hover {
+  color: #e53e3e;
+}
+
+.empty-tip {
+  font-size: 12px;
+  color: #aaa;
+  text-align: center;
+  padding: 8px 0;
+}

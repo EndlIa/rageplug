@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "rageplug",
+  "version": "1.0.0",
+  "description": "简中互联网，很神奇吧",
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "rageplug",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.zhihu.com/*",
+        "https://zhihu.com/*",
+        "https://zhuanlan.zhihu.com/*"
+      ],
+      "css": ["content.css"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

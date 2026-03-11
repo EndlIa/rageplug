@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <h1 class="title">rageplug</h1>
+
+    <!-- dark mode -->
+    <div class="section">
+      <label class="toggle">
+        <span class="toggle-label">暗色模式</span>
+        <input type="checkbox" id="darkMode">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <hr>
+
+    <!-- blocklist -->
+    <div class="section">
+      <h2 class="section-title">屏蔽词</h2>
+      <div class="blocklist-input">
+        <input type="text" id="blockWord" placeholder="输入关键词…" maxlength="50">
+        <button id="addWord">添加</button>
+      </div>
+      <ul id="blocklistItems" class="blocklist"></ul>
+      <p id="emptyTip" class="empty-tip">暂无屏蔽词</p>
+    </div>
+
+    <hr>
+
+    <!-- whitelist -->
+    <div class="section">
+      <h2 class="section-title">白名单</h2>
+      <div class="blocklist-input">
+        <input type="text" id="whiteWord" placeholder="输入关键词…" maxlength="50">
+        <button id="addWhiteWord">添加</button>
+      </div>
+      <ul id="whitelistItems" class="blocklist whitelist"></ul>
+      <p id="emptyWhiteTip" class="empty-tip">暂无白名单词</p>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

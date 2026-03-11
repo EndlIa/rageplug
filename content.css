@@ -1,0 +1,162 @@
+/* rageplug — content.css */
+
+/* sidebar */
+.GlobalSideBar,
+.Pc-word,
+.RichText-LinkCardContainer,
+.Sticky--holder:has(.GlobalSideBar),
+.Question-sideColumn,
+.Topstory-container .Topstory-mainColumn + div,
+.SearchSideBar,
+.zhuanlan .ColumnPageHeader-Wrapper .Post-SideActions {
+  display: none !important;
+}
+
+/* ad cards */
+.TopstoryItem--advertCard,
+.Pc-feedAd,
+.Pc-feedAd-container,
+[data-za-detail-view-path-module="AnswerItem_Ad"],
+[data-za-detail-view-path-module*="AdItem"],
+.Card[data-za-module*="Ad"] {
+  display: none !important;
+}
+
+/* nav ads */
+.AppHeader-notificationEntry[aria-label="升级"],
+.AppHeader .Popover:has([class*="Ad"]),
+.Banner-link,
+.Pc-card--ad,
+.TopstoryTabs .Popover[aria-label*="广告"] {
+  display: none !important;
+}
+
+/* video cards */
+.TopstoryItem--videoCard,
+.VideoCard,
+[class*="ZVideoItem"],
+.Feed-item:has(.ZVideo) {
+  display: none !important;
+}
+
+/* salt-select promos */
+.MCNLinkCard,
+[class*="KfeCollection"],
+[class*="VipContentItem"],
+.Card:has([class*="KfeCollection"]),
+.TopstoryItem:has([class*="KfeCollection"]) {
+  display: none !important;
+}
+
+/* top banner / write area / hot search / recommendations */
+.Pc-Business-Card-PcTopFeedBanner,
+.WriteArea.Card,
+.HotSearchCard,
+.Recommendations-Main {
+  display: none !important;
+}
+
+/* hide search placeholder hot-word */
+#Popover1-toggle::placeholder {
+  color: transparent !important;
+}
+
+/* reading mode: widen & center */
+.Topstory-mainColumn,
+.Question-mainColumn {
+  width: 900px !important;
+  max-width: 900px !important;
+  flex: none !important;
+}
+
+.Post-content,
+.Post-RichTextContainer {
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.Topstory-container,
+.QuestionPage .Question-main {
+  justify-content: center !important;
+}
+
+/* dark mode */
+html.zhihu-clean-dark {
+  --zc-bg-primary: #000000;
+  --zc-bg-secondary: #111111;
+  --zc-bg-card: #1a1a1a;
+  --zc-text-primary: #ffffff;
+  --zc-text-secondary: #bbbbbb;
+  --zc-border: #333333;
+  --zc-link: #6cb4ee;
+}
+
+html.zhihu-clean-dark body,
+html.zhihu-clean-dark .AppHeader,
+html.zhihu-clean-dark .App {
+  background-color: var(--zc-bg-primary) !important;
+  color: var(--zc-text-primary) !important;
+}
+
+html.zhihu-clean-dark .AppHeader {
+  background-color: var(--zc-bg-secondary) !important;
+  border-bottom-color: var(--zc-border) !important;
+}
+
+html.zhihu-clean-dark .Card,
+html.zhihu-clean-dark .ContentItem,
+html.zhihu-clean-dark .List-item,
+html.zhihu-clean-dark .TopstoryItem,
+html.zhihu-clean-dark .Feed,
+html.zhihu-clean-dark .Post-content,
+html.zhihu-clean-dark .QuestionHeader,
+html.zhihu-clean-dark .QuestionRichText,
+html.zhihu-clean-dark .AnswerItem,
+html.zhihu-clean-dark .RichContent,
+html.zhihu-clean-dark .CommentListV2 {
+  background-color: var(--zc-bg-card) !important;
+  color: var(--zc-text-primary) !important;
+  border-color: var(--zc-border) !important;
+}
+
+html.zhihu-clean-dark .ContentItem-title a,
+html.zhihu-clean-dark a {
+  color: var(--zc-link) !important;
+}
+
+html.zhihu-clean-dark .ContentItem-meta,
+html.zhihu-clean-dark .MetaItem,
+html.zhihu-clean-dark .AuthorInfo-content {
+  color: var(--zc-text-secondary) !important;
+}
+
+html.zhihu-clean-dark input,
+html.zhihu-clean-dark textarea {
+  background-color: var(--zc-bg-secondary) !important;
+  color: var(--zc-text-primary) !important;
+  border-color: var(--zc-border) !important;
+}
+
+html.zhihu-clean-dark .Button,
+html.zhihu-clean-dark button {
+  background-color: var(--zc-bg-secondary) !important;
+  color: var(--zc-text-primary) !important;
+  border-color: var(--zc-border) !important;
+}
+
+html.zhihu-clean-dark .Button--primary,
+html.zhihu-clean-dark .Button--blue {
+  background-color: #1a56db !important;
+  color: #fff !important;
+}
+
+html.zhihu-clean-dark img,
+html.zhihu-clean-dark video {
+  opacity: 0.9;
+}
+
+/* blocked cards */
+.zhihu-clean-blocked {
+  display: none !important;
+}
