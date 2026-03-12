@@ -13,10 +13,6 @@
     return pathname === '/' || pathname === '';
   }
 
-  function setDarkMode(enabled) {
-    document.documentElement.classList.toggle('zhihu-clean-dark', enabled);
-  }
-
   function shouldBlock(text) {
     if (!blocklist.length) return false;
     const lower = text.toLowerCase();
@@ -93,8 +89,7 @@
   }
 
   function init() {
-    chrome.storage.sync.get(['darkMode', 'blocklist', 'whitelist', 'blockStrength'], result => {
-      setDarkMode(!!result.darkMode);
+    chrome.storage.sync.get(['blocklist', 'whitelist', 'blockStrength'], result => {
       blocklist = Array.isArray(result.blocklist) ? result.blocklist : [];
       whitelist = Array.isArray(result.whitelist) ? result.whitelist : [];
       blockStrength = typeof result.blockStrength === 'number' ? result.blockStrength : 100;
@@ -106,7 +101,6 @@
 
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== 'sync') return;
-      if (changes.darkMode) setDarkMode(!!changes.darkMode.newValue);
       if (changes.blocklist) {
         blocklist = Array.isArray(changes.blocklist.newValue) ? changes.blocklist.newValue : [];
         scanAllCards();

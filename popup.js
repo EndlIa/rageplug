@@ -1,9 +1,9 @@
 (() => {
   'use strict';
 
-  const darkModeCheckbox = document.getElementById('darkMode');
   const blockStrengthSlider = document.getElementById('blockStrength');
   const strengthValueSpan = document.getElementById('strengthValue');
+  const themeToggle = document.getElementById('themeToggle');
 
   // shared factory for blocklist / whitelist UI
   function makeListManager({ inputId, addBtnId, listId, emptyId, storageKey }) {
@@ -66,23 +66,39 @@
     storageKey: 'whitelist'
   });
 
-  darkModeCheckbox.addEventListener('change', () => {
-    chrome.storage.sync.set({ darkMode: darkModeCheckbox.checked });
-  });
-
   blockStrengthSlider.addEventListener('input', () => {
     const value = parseInt(blockStrengthSlider.value);
     strengthValueSpan.textContent = value + '%';
     chrome.storage.sync.set({ blockStrength: value });
   });
 
-  chrome.storage.sync.get(['darkMode', 'blocklist', 'whitelist', 'blockStrength'], result => {
-    darkModeCheckbox.checked = !!result.darkMode;
+  // 暗色模式切换
+  themeToggle.addEventListener('change', () => {
+    const isDark = themeToggle.checked;
+    const theme = isDark ? 'dark' : 'light';
+    
+    chrome.storage.sync.set({ theme: theme });
+    
+    // 获取当前活动标签页并修改URL
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      if (tabs[0]) {
+        const url = new URL(tabs[0].url);
+        url.searchParams.set('theme', theme);
+        chrome.tabs.update(tabs[0].id, { url: url.toString() });
+      }
+    });
+  });
+
+  chrome.storage.sync.get(['blocklist', 'whitelist', 'blockStrength', 'theme'], result => {
     const strength = typeof result.blockStrength === 'number' ? result.blockStrength : 100;
     blockStrengthSlider.value = strength;
     strengthValueSpan.textContent = strength + '%';
     blockMgr.init(result.blocklist);
     whiteMgr.init(result.whitelist);
+    
+    // 设置暗色模式开关状态
+    const theme = result.theme || 'light';
+    themeToggle.checked = theme === 'dark';
   });
 })();
 
