@@ -2,6 +2,8 @@
   'use strict';
 
   const darkModeCheckbox = document.getElementById('darkMode');
+  const blockStrengthSlider = document.getElementById('blockStrength');
+  const strengthValueSpan = document.getElementById('strengthValue');
 
   // shared factory for blocklist / whitelist UI
   function makeListManager({ inputId, addBtnId, listId, emptyId, storageKey }) {
@@ -68,8 +70,17 @@
     chrome.storage.sync.set({ darkMode: darkModeCheckbox.checked });
   });
 
-  chrome.storage.sync.get(['darkMode', 'blocklist', 'whitelist'], result => {
+  blockStrengthSlider.addEventListener('input', () => {
+    const value = parseInt(blockStrengthSlider.value);
+    strengthValueSpan.textContent = value + '%';
+    chrome.storage.sync.set({ blockStrength: value });
+  });
+
+  chrome.storage.sync.get(['darkMode', 'blocklist', 'whitelist', 'blockStrength'], result => {
     darkModeCheckbox.checked = !!result.darkMode;
+    const strength = typeof result.blockStrength === 'number' ? result.blockStrength : 100;
+    blockStrengthSlider.value = strength;
+    strengthValueSpan.textContent = strength + '%';
     blockMgr.init(result.blocklist);
     whiteMgr.init(result.whitelist);
   });

@@ -43,7 +43,6 @@ hr {
   margin-left: 4px;
 }
 
-/* 白名单词条背景色区分 */
 .whitelist li {
   background: #f0faf0;
 }
@@ -52,7 +51,6 @@ hr {
   color: #276749;
 }
 
-/* --- 开关 toggle --- */
 .toggle {
   display: flex;
   align-items: center;
@@ -99,7 +97,6 @@ hr {
   transform: translateX(18px);
 }
 
-/* --- 屏蔽词输入 --- */
 .blocklist-input {
   display: flex;
   gap: 6px;
@@ -136,27 +133,31 @@ hr {
   background: #0052cc;
 }
 
-/* --- 屏蔽词列表 --- */
 .blocklist {
   list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
   max-height: 200px;
   overflow-y: auto;
 }
 
 .blocklist li {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 5px 8px;
-  margin-bottom: 4px;
   background: #f5f5f5;
   border-radius: 6px;
   font-size: 13px;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .blocklist li .word {
   word-break: break-all;
-  flex: 1;
+  max-width: 180px;
   margin-right: 8px;
 }
 
@@ -180,4 +181,61 @@ hr {
   color: #aaa;
   text-align: center;
   padding: 8px 0;
+}
+
+/* Block Strength Slider */
+.strength-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#blockStrength {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e8e8e8;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+#blockStrength::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0066ff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#blockStrength::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #0052cc;
+}
+
+#blockStrength::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: #0066ff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#blockStrength::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background: #0052cc;
+}
+
+.strength-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0066ff;
+  min-width: 45px;
+  text-align: right;
 }
